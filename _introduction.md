@@ -1,32 +1,32 @@
 
 # Introdução #
 
-Introduzida na versão 1.0, a API modo REST permite que você aloque informações à serem criadas, lidas, atualizadas, e deletadas usando o formato JSON.
+Introduzida na versão 1.9, a API REST permite que você aloque informações à serem criadas, lidas, atualizadas, e deletadas usando o formato JSON.
 
-Introduced in WooCommerce 2.1, the REST API allows store data to be created, read, updated, and deleted using the JSON format.
+Introduced in 1.9 version, the REST API allows store data to be created, read, updated, and deleted using the JSON format.
 
 ## Autenticação ##
 
-Existem duas maneiras para se autenticar com a API, dependendo se o website em questão tem suporte à SSL ou não. Lembre-se que o índice indicará se o site suporta SSL ou não. 
+Existem duas maneiras para se autenticar na API, dependendo se o estiver disponível o suporte à SSL ou não. Lembre-se que o índice indicará se o sistema já está suportando SSL ou não. 
 
-There are two aways to authenticate with the API, depending on whether the site supports SSL or not.  Remember that the Index endpoint will indicate if the site supports SSL or not.
+There are two aways to authenticate with the API, depending on whether the system supports SSL or not. Remember that the Index endpoint will indicate if the system already supports SSL or not.
 
 ### Através de HTTPS ###
 
-Você pode usar [Autenticação Básica via HTTP](http://en.wikipedia.org/wiki/Basic_access_authentication) fornecendo a chave de usuário API como o nome de usuário e o segredo de usuário API como a senha.
+Você pode usar [Autenticação Básica via HTTP](http://en.wikipedia.org/wiki/Basic_access_authentication) fornecendo a chave API de usuário como usuário e o segredo API de usuário como senha.
 
-You may use [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication) by providing the API Consumer Key as the username and the API Consumer Secret as the password.
+You may use [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication) by providing the API User Key as the username and the API User Secret as the password.
 
 > Exemplo de autenticação básica HTTP
 
 > HTTP Basic Auth example
 
 ```shell
-curl https://www.domum.com.br/api/orders \
-    -u consumer_key:consumer_secret
+curl https://api.domum.com.br/clientes \
+    -u chave_usuario:segredo_usuario
 ```
 
-Ocasionalmente alguns servidores podem não parear o cabeçalho de autenticação (Se você obter um erro "Chave de usuário está faltando" ao autenticar via SSL, você certamente tem um problema de servidor). Neste caso, você pode fornecer a chave e segredo de usuário como parâmetros da consulta via string.
+Ocasionalmente alguns servidores podem não parear o cabeçalho de autenticação (Se você obter um erro "Chave de usuário faltando" ao autenticar via SSL, você certamente tem um problema de servidor). Neste caso, você pode fornecer a chave e segredo de usuário como parâmetros da consulta via string.
 
 Occasionally some servers may not properly parse the Authorization header (if you see a "Consumer key is missing" error when authenticating over SSL, you have a server issue). In this case, you may provide the consumer key/secret as query string parameters.
 
@@ -35,12 +35,12 @@ Occasionally some servers may not properly parse the Authorization header (if yo
 > Example for servers that not properly parse the Authorization header:
 
 ```shell
-curl https://www.domum.com.br/api/orders?consumer_key=123&consumer_secret=abc
+curl https://api.domum.com.br/clientes?chave_usuario=123&segredo_usuario=abc
 ```
 
 ### Através de HTTP ###
 
-Você deve usar a [OAuth 1.0a "one-legged" authentication](http://tools.ietf.org/html/rfc5849) para assegurar que as credenciais da API não sejam interceptadas. Como de praxe, você pode usar qualquer padrão OAuth 1.0a de bibliotecas de sua linguagem de preferência para realizar a autenticação, ou gerar os parâmetros necessários seguindo as instruções.
+Você deve usar a [autenticação OAuth 1.0a "one-legged"](http://tools.ietf.org/html/rfc5849) para assegurar que as credenciais da API não sejam interceptadas. Como de praxe, você pode usar qualquer biblioteca padrão OAuth 1.0a da linguagem de sua preferência para realizar a autenticação, ou gerar os parâmetros necessários seguindo as instruções.
 
 You must use [OAuth 1.0a "one-legged" authentication](http://tools.ietf.org/html/rfc5849) to ensure API credentials cannot be intercepted. Typically you may use any standard OAuth 1.0a library in your language of choice to handle the authentication, or generate the necessary parameters by following these instructions.
 
@@ -52,13 +52,13 @@ You must use [OAuth 1.0a "one-legged" authentication](http://tools.ietf.org/html
 
 2) Defina sua URL de requerimento básica -- esta é a URI de requisição completa sem os parâmetros de consulta -- e codificação de URL de acordo com RFC 3986:
 
-`http://www.example.com/wc-api/v1/orders`
+`http://api.domum.com.br/v1/clientes`
 
 Quando codificado:
 
-`http%3A%2F%2Fwww.example.com%2Fwc-api%2Fv1%2Forders`
+`http%3A%2F%2Fapi.domum.com.br%2Fv1%2Fclientes`
 
-3) Colete e normalize seus parâmetros de consulta. Isto inclui todos os `oauth_*` parâmetros exceto pela assinatura. Parâmetros devem ser normalizados pela codificação da URL de acordo com a RFC 3986 (`rawurlencode` no PHP) e porcentagem(`%`) caracteres deveriam ser codificados duplamente (e.g. `%` se tornaria`%25`.
+3) Colete e normalize seus parâmetros de consulta. Isto inclui todos os parâmetros `oauth_*` exceto pela assinatura. Parâmetros devem ser normalizados pela codificação da URL de acordo com a RFC 3986 (`rawurlencode` no PHP) e caracter `%` (porcentagem) deve ser codificados duplamente (ex.: `%` se tornaria `%25`).
 
 4) Defina os parâmetros em ordem de bytes (`uksort( $params, 'strcmp' )` no PHP)
 
@@ -66,15 +66,15 @@ Quando codificado:
 
 `oauth_signature_method%3DHMAC-SHA1`
 
-6) Junte cada parâmetro de chave/valor com um E comercial codificado (`%26`):
+6) Junte cada parâmetro de chave/valor com um `&` (e comercial) codificado (`%26`):
 
 `oauth_consumer_key%3Dabc123%26oauth_signature_method%3DHMAC-SHA1`
 
-7) Forme a string para se logar juntando o método HTTP, URI de requisição codificada, e o parâmetro codificado da string com um E comercial não codificado (&):
+7) Para se logar forme uma string juntando o método HTTP, URI de requisição codificada, e o parâmetro codificado da string com um `&` (e comercial) não codificado (`&`):
 
-`GET&http%3A%2F%2Fwww.example.com%2Fwc-api%2Fv1%2Forders&oauth_consumer_key%3Dabc123%26oauth_signature_method%3DHMAC-SHA1`
+`GET&http%3A%2F%2Fapi.domum.com.br%2Fv1%2Fclientes&oauth_consumer_key%3Dabc123%26oauth_signature_method%3DHMAC-SHA1`
 
-8) Gere a assinatura usando a chave de string e seu segredo de usuário. 
+8) Gere a assinatura usando essa chave string e seu segredo de usuário. 
 
 Se você estiver tendo problemas ao gerar a assinatura correta, você irá ter que rever sua codificação da string da assinatura. A documentação da [Autenticação](https://github.com/woothemes/woocommerce/blob/master/includes/api/class-wc-api-authentication.php#L177) pode ser muito útil para entender como gerar devidamente a assinatura.
 
