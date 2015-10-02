@@ -80,13 +80,13 @@ Se você estiver tendo problemas ao gerar a assinatura correta, você irá ter q
 
 #### Dicas OAuth ####
 
-* The OAuth parameters must be added as query string parameters and *not* included in the Authorization header. This is because there is no reliable cross-platform way to get the raw request headers in WordPress.
-* The require parameters are: `oauth_consumer_key`, `oauth_timestamp`, `oauth_nonce`, `oauth_signature`, and `oauth_signature_method`. `oauth_version` is not required and must be omitted.
-* HMAC-SHA1 or HMAC-SHA256 are the only accepted hash algorithms.
-* The OAuth nonce can be any randomly generated 32 character (recommended) string that is unique to the consumer key. Read more suggestions on [generating a nonce](https://dev.twitter.com/discussions/12445) on the Twitter API forums.
-* The OAuth timestamp should be the unix timestamp at the time of the request. The API will deny any requests that include a timestamp that is outside of a 15 minute window to prevent replay attacks.
-* You must use the store URL provided by the index when forming the base string used for the signature, as this is what the server will use. (e.g. if the store URL includes a `www` sub-domain, you should use it for requests)
-* You may test your generated signature using LinkedIn's [OAuth test console](http://developer.linkedinlabs.com/oauth-test/) -- leave the member token/secret blank.
-* Twitter has great instructions on [generating a signature](https://dev.twitter.com/docs/auth/creating-signature) with OAuth 1.0a, but remember tokens are not used with this implementation.
-* Note that the request body is *not* signed as per the OAuth spec, see [Google's OAuth 1.0 extension](https://oauth.googlecode.com/svn/spec/ext/body_hash/1.0/oauth-bodyhash.html) for details on why.
-* If including filter fields in your request, it saves a lot of trouble if you can order your filter fields alphabetically before submitting. Many Oauth libraries won't order subquery fields properly, resulting in invalid signatures.
+* Os parâmetros OAuth devem ser adicionados como strings na consulta e *não* incluídos no cabeçalho da autorização. Isso se deve porque não existe uma forma confiável de multi-plataformas para pegar as requisições de cabeçalho do WordPress.
+* Os parâmetros de requerimento são: `oauth_consumer_key`, `oauth_timestamp`, `oauth_nonce`, `oauth_signature`, e `oauth_signature_method`. `oauth_version` não são obrigatórios e devem ser omitidos.
+* HMAC-SHA1 or HMAC-SHA256 são os únicos algoritmos permitidos via hash.
+* A OAuth nonce pode ser qualquer string que contenha 32 caracteres (recomendado) sendo única para a chave de consumidor. Leia mais em [generating a nonce](https://dev.twitter.com/discussions/12445) nos fóruns da API do Twitter.
+* A OAuth timestamp deve ser única na hora da requisição. A API irá bloquear quaisquer requerimentos que incluam uma timestamp gerada a mais de 15 minutos para prevenir ataques de repetição.
+* Você deve usar a URL fornecida pelo índice quando formado a string base usada para a assinatura, justamente porque é esta assinatura que o servidor irá usar. (e.g. se a URL guardada possui o sub-domínio `www`, você deveria usá-la para requerimentos)
+* Você pode testar suas assinaturas geradas usando o LinkedIn em [Console de testes OAuth](http://developer.linkedinlabs.com/oauth-test/) -- deixe o token de membro e segredo em branco.
+* Twitter possui ótimas instruções sobre como [gerar uma assinatura](https://dev.twitter.com/docs/auth/creating-signature) com OAuth 1.0a, mas lembre-se que os tokens não são utilizados nesta implementação.
+* Lembre-se que o corpo da solicitação não está assinado conforme a especificação OAuth, para tal, consulte a [extensão do Google OAuth 1.0](https://oauth.googlecode.com/svn/spec/ext/body_hash/1.0/oauth-bodyhash.html) para obter mais detalhes sobre o motivo.
+* Se incluído campos de filtro em sua solicitação, você pode salvar tempo se ordenar seus campos de filtro em ordem alfabética antes de enviar. Muitas bibliotecas OAuth não vão ordenar consultas de subcampos adequadamente, resultando em assinaturas inválidas.
